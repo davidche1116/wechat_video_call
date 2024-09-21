@@ -1,0 +1,2 @@
+# wechat_video_call
+利用Android无障碍服务一键自动拨打微信视频通话的Flutter插件
