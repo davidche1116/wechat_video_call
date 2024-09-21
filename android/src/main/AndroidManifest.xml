@@ -1,0 +1,19 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.dc16.wechat_video_call">
+
+    <!-- Support WeChat query on Android P -->
+    <queries>
+        <package android:name="com.tencent.mm" />
+    </queries>
+
+    <application>
+        <service android:name=".WechatAccessibility"
+                 android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/accessibility_service_wechat" />
+        </service>
+    </application>
+
+</manifest>
