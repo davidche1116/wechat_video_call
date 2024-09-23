@@ -11,15 +11,15 @@ class MethodChannelWechatVideoCall extends WechatVideoCallPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
 
   @override
   Future<bool> requestAccessibilityPermission() async {
     try {
-      return await methodChannel
-          .invokeMethod('requestAccessibilityPermission');
+      return await methodChannel.invokeMethod('requestAccessibilityPermission');
     } on PlatformException catch (error) {
       debugPrint("$error");
       return Future.value(false);
@@ -40,8 +40,7 @@ class MethodChannelWechatVideoCall extends WechatVideoCallPlatform {
   @override
   Future<bool> videoCall(String name) async {
     try {
-      return await methodChannel
-          .invokeMethod('videoCall', {'name': name});
+      return await methodChannel.invokeMethod('videoCall', {'name': name});
     } on PlatformException catch (error) {
       debugPrint("$error");
       return false;

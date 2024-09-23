@@ -1,4 +1,3 @@
-
 import 'wechat_video_call_platform_interface.dart';
 
 class WechatVideoCall {

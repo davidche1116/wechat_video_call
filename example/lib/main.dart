@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wechat_video_call/wechat_video_call.dart';
 
@@ -31,8 +31,8 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await WechatVideoCall.getPlatformVersion() ?? 'Unknown platform version';
+      platformVersion = await WechatVideoCall.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -58,25 +58,34 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             children: [
               Text('Running on: $_platformVersion\n'),
-              FilledButton(onPressed: () async {
-                bool ret = await WechatVideoCall.requestAccessibilityPermission();
-                debugPrint('requestAccessibilityPermission=$ret');
-              }, child: const Text('requestAccessibilityPermission')),
-              FilledButton(onPressed: () async {
-                bool ret = await WechatVideoCall.isAccessibilityPermissionEnabled();
-                debugPrint('isAccessibilityPermissionEnabled=$ret');
-              }, child: const Text('isAccessibilityPermissionEnabled')),
-            TextField(
+              FilledButton(
+                  onPressed: () async {
+                    bool ret =
+                        await WechatVideoCall.requestAccessibilityPermission();
+                    debugPrint('requestAccessibilityPermission=$ret');
+                  },
+                  child: const Text('requestAccessibilityPermission')),
+              FilledButton(
+                  onPressed: () async {
+                    bool ret = await WechatVideoCall
+                        .isAccessibilityPermissionEnabled();
+                    debugPrint('isAccessibilityPermissionEnabled=$ret');
+                  },
+                  child: const Text('isAccessibilityPermissionEnabled')),
+              TextField(
                 controller: _controller,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: '拨打视频的微信',
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: '拨打视频的微信',
+                ),
               ),
-            ),
-              FilledButton(onPressed: () async {
-                bool ret = await WechatVideoCall.videoCall(_controller.text);
-                debugPrint('videoCall=$ret');
-              }, child: const Text('videoCall')),
+              FilledButton(
+                  onPressed: () async {
+                    bool ret =
+                        await WechatVideoCall.videoCall(_controller.text);
+                    debugPrint('videoCall=$ret');
+                  },
+                  child: const Text('videoCall')),
             ],
           ),
         ),
