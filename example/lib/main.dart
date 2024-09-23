@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:wechat_video_call/wechat_video_call.dart';
 
 void main() {
@@ -16,34 +13,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
   final _controller = TextEditingController();
+  final List<String> _nameList = [];
+  bool _accessibilityPermissionEnabled = false;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion = await WechatVideoCall.getPlatformVersion() ??
-          'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
+    WechatVideoCall.isAccessibilityPermissionEnabled().then((res) {
+      setState(() {
+        _accessibilityPermissionEnabled = res;
+      });
     });
   }
 
@@ -52,42 +32,67 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Wechat Video Call'),
         ),
-        body: Center(
-          child: Column(
-            children: [
-              Text('Running on: $_platformVersion\n'),
-              FilledButton(
-                  onPressed: () async {
-                    bool ret =
-                        await WechatVideoCall.requestAccessibilityPermission();
-                    debugPrint('requestAccessibilityPermission=$ret');
-                  },
-                  child: const Text('requestAccessibilityPermission')),
-              FilledButton(
-                  onPressed: () async {
-                    bool ret = await WechatVideoCall
-                        .isAccessibilityPermissionEnabled();
-                    debugPrint('isAccessibilityPermissionEnabled=$ret');
-                  },
-                  child: const Text('isAccessibilityPermissionEnabled')),
-              TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: '拨打视频的微信',
-                ),
+        body: ListView(
+          padding: const EdgeInsets.all(10),
+          children: [
+            ListTile(
+              title: const Text('AccessibilityPermission'),
+              trailing: Text(_accessibilityPermissionEnabled ? 'On' : 'Off'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                bool ret =
+                    await WechatVideoCall.requestAccessibilityPermission();
+                debugPrint('requestAccessibilityPermission=$ret');
+              },
+              child: const Text('requestAccessibilityPermission'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                bool ret =
+                    await WechatVideoCall.isAccessibilityPermissionEnabled();
+                debugPrint('isAccessibilityPermissionEnabled=$ret');
+                setState(() {
+                  _accessibilityPermissionEnabled = ret;
+                });
+              },
+              child: const Text('isAccessibilityPermissionEnabled'),
+            ),
+            TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                hintText: 'wechat nickname',
               ),
-              FilledButton(
+            ),
+            FilledButton(
+              onPressed: () async {
+                String name = _controller.text;
+                bool ret = await WechatVideoCall.videoCall(name);
+                debugPrint('videoCall=$ret');
+                if (!_nameList.contains(name)) {
+                  _nameList.add(name);
+                  setState(() {});
+                }
+              },
+              child: const Text('VideoCall'),
+            ),
+            Wrap(spacing: 10, children: [
+              for (String name in _nameList)
+                OutlinedButton(
                   onPressed: () async {
-                    bool ret =
-                        await WechatVideoCall.videoCall(_controller.text);
+                    bool ret = await WechatVideoCall.videoCall(name);
                     debugPrint('videoCall=$ret');
                   },
-                  child: const Text('videoCall')),
-            ],
-          ),
+                  onLongPress: () async {
+                    _nameList.remove(name);
+                    setState(() {});
+                  },
+                  child: Text(name),
+                ),
+            ]),
+          ],
         ),
       ),
     );
