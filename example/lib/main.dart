@@ -78,12 +78,25 @@ class _MyAppState extends State<MyApp> {
               },
               child: const Text('VideoCall'),
             ),
+            FilledButton(
+              onPressed: () async {
+                String name = _controller.text;
+                bool ret = await WechatVideoCall.voiceCall(name);
+                debugPrint('voiceCall=$ret');
+                if (!_nameList.contains(name)) {
+                  _nameList.add(name);
+                  setState(() {});
+                }
+              },
+              child: const Text('VoiceCall'),
+            ),
             Wrap(spacing: 10, children: [
               for (String name in _nameList)
                 OutlinedButton(
                   onPressed: () async {
-                    bool ret = await WechatVideoCall.videoCall(name);
-                    debugPrint('videoCall=$ret');
+                    setState(() {
+                      _controller.text = name;
+                    });
                   },
                   onLongPress: () async {
                     _nameList.remove(name);

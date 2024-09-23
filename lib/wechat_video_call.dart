@@ -19,4 +19,9 @@ class WechatVideoCall {
   static Future<bool> videoCall(String name) async {
     return WechatVideoCallPlatform.instance.videoCall(name);
   }
+
+  /// WeChat voice call with [name]
+  static Future<bool> voiceCall(String name) async {
+    return WechatVideoCallPlatform.instance.voiceCall(name);
+  }
 }

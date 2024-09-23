@@ -47,8 +47,9 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
             result.success(isAccessibilitySettingsOn(context))
         } else if (call.method == "videoCall") {
             val name: String? = call.argument("name")
-            if (name != null) {
-                result.success(videoCall(name))
+            val video: Boolean? = call.argument("video")
+            if (name != null && video != null) {
+                result.success(videoCall(name, video))
             } else {
                 result.error("UNAVAILABLE", "WechatVideoCall not available.", null)
             }
@@ -128,8 +129,9 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         return false
     }
 
-    fun videoCall(name: String): Boolean {
+    private fun videoCall(name: String, video: Boolean): Boolean {
         Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
+        WechatData.updateVideo(video)
         WechatData.updateValue(name)
         WechatData.updateIndex(1)
         val intent = Intent()
@@ -138,5 +140,6 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         activity.startActivity(intent)
         return true
     }
+
 
 }

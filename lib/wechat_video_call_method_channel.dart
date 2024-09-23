@@ -40,7 +40,19 @@ class MethodChannelWechatVideoCall extends WechatVideoCallPlatform {
   @override
   Future<bool> videoCall(String name) async {
     try {
-      return await methodChannel.invokeMethod('videoCall', {'name': name});
+      return await methodChannel
+          .invokeMethod('videoCall', {'name': name, 'video': true});
+    } on PlatformException catch (error) {
+      debugPrint("$error");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> voiceCall(String name) async {
+    try {
+      return await methodChannel
+          .invokeMethod('videoCall', {'name': name, 'video': false});
     } on PlatformException catch (error) {
       debugPrint("$error");
       return false;

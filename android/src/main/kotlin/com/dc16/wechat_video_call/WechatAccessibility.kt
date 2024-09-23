@@ -85,7 +85,7 @@ class WechatAccessibility : AccessibilityService() {
         if (WechatData.index == 6) {
             // 点击视频通话菜单
             if (currentActivity == WechatActivity.CHAT.id) {
-                val menu = rootInActiveWindow.findAccessibilityNodeInfosByText("视频通话")
+                val menu = rootInActiveWindow.findAccessibilityNodeInfosByText(WechatData.findText(false))
                 if (menu.isNotEmpty()) {
                     val rect = Rect()
                     menu.first().getBoundsInScreen(rect)
@@ -98,7 +98,7 @@ class WechatAccessibility : AccessibilityService() {
         if (WechatData.index == 7) {
             // 点击视频通话选项
             if (currentActivity == WechatActivity.DIALOG.id || currentActivity == WechatActivity.DIALOG_OLD.id) {
-                val options = rootInActiveWindow.findAccessibilityNodeInfosByText("视频通话")
+                val options = rootInActiveWindow.findAccessibilityNodeInfosByText(WechatData.findText(true))
                 if (options.isNotEmpty()) {
                     options.first().click()
                     Thread.sleep(500)
