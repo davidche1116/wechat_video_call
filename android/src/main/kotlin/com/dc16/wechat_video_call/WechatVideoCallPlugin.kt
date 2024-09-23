@@ -6,10 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.provider.Settings
-import android.text.TextUtils
 import android.text.TextUtils.SimpleStringSplitter
 import android.widget.Toast
-import com.dc16.wechat_video_call.WechatAccessibility
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -35,7 +33,7 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "wechat_video_call")
         channel.setMethodCallHandler(this)
 
-        context = flutterPluginBinding.getApplicationContext()
+        context = flutterPluginBinding.applicationContext
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
@@ -82,7 +80,6 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
     private val actionsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context?, intent: Intent) {
-//      val actions: ArrayList<Int!>? = intent.getIntegerArrayListExtra("actions")
             pendingResult.success(intent.getIntegerArrayListExtra("actions"))
         }
     }
@@ -104,7 +101,6 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
     fun isAccessibilitySettingsOn(mContext: Context): Boolean {
         var accessibilityEnabled: Int = 0
         val service: String = mContext.packageName + "/" + WechatAccessibility::class.java.getCanonicalName()
-//    val service: String = mContext.getPackageName() + "/"
         try {
             accessibilityEnabled = Settings.Secure.getInt(
                 mContext.applicationContext.contentResolver,
@@ -134,7 +130,7 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
 
     fun videoCall(name: String): Boolean {
         Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
-      WechatData.updateValue(name)
+        WechatData.updateValue(name)
         WechatData.updateIndex(1)
         val intent = Intent()
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK)

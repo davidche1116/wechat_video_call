@@ -9,7 +9,7 @@ The Flutter plugin that uses Android accessibility service to automatically dial
 
 Note:
 - Enable the APP accessibility service in the system setting [Accessibility].
-- Wechat must be logged in, and the nickname or note for the video call is already in the friends list.
+- WeChat must be logged in, and the nickname or note for the video call is already in the friends list.
 
 ---
 
@@ -24,7 +24,7 @@ Check accessibility
 bool ret = await WechatVideoCall.isAccessibilityPermissionEnabled();
 ```
 
-Make a wechat video call by nickname or remarks
+Make a WeChat video call by nickname or remarks
 ```dart
 bool ret = await WechatVideoCall.videoCall(nickname);
 ```

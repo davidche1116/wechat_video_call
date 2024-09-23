@@ -1,3 +1,8 @@
+## 0.0.2
+
+* Add support Android WeChat 8.0.51 (2720).
+* code formatting
+
 ## 0.0.1
 
-* 初步实现功能，支持Android微信8.0.50（2701）、8.0.51（2720）.
+* Initial implementation of functions, support Android WeChat 8.0.50 (2701).

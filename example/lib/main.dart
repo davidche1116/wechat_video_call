@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Wechat Video Call'),
+          title: const Text('WeChat Video Call'),
         ),
         body: ListView(
           padding: const EdgeInsets.all(10),
@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
             TextField(
               controller: _controller,
               decoration: const InputDecoration(
-                hintText: 'wechat nickname',
+                hintText: 'WeChat Nickname',
               ),
             ),
             FilledButton(
