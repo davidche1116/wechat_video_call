@@ -10,13 +10,6 @@ class MethodChannelWechatVideoCall extends WechatVideoCallPlatform {
   final methodChannel = const MethodChannel('wechat_video_call');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version =
-        await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
-
-  @override
   Future<bool> requestAccessibilityPermission() async {
     try {
       return await methodChannel.invokeMethod('requestAccessibilityPermission');

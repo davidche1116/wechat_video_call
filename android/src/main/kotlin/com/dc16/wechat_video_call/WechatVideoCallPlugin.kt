@@ -38,9 +38,7 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         pendingResult = result
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-        } else if (call.method == "requestAccessibilityPermission") {
+        if (call.method == "requestAccessibilityPermission") {
             val intent: Intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             activity.startActivityForResult(intent, REQUEST_CODE_FOR_ACCESSIBILITY)
         } else if (call.method == "isAccessibilityPermissionEnabled") {

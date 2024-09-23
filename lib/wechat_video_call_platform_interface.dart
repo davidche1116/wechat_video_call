@@ -23,10 +23,6 @@ abstract class WechatVideoCallPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
   Future<bool> requestAccessibilityPermission() {
     throw UnimplementedError(
         'requestAccessibilityPermission() has not been implemented.');

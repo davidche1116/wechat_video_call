@@ -1,9 +1,6 @@
 import 'wechat_video_call_platform_interface.dart';
 
 class WechatVideoCall {
-  static Future<String?> getPlatformVersion() {
-    return WechatVideoCallPlatform.instance.getPlatformVersion();
-  }
 
   /// request Accessibility Permission
   static Future<bool> requestAccessibilityPermission() async {
