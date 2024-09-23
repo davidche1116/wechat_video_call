@@ -19,12 +19,12 @@ class WechatAccessibility : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        android.util.Log.d(tag, event?.toString() ?: "null")
-        android.util.Log.d(tag, String.format("%d", WechatData.index))
         val currentActivity = event?.className ?: return
+        android.util.Log.d(tag, event.toString())
+        android.util.Log.d(tag, String.format("%d", WechatData.index))
         if (WechatData.index == 1) {
             if (currentActivity == WechatActivity.INDEX.id) {
-                //1、底部导航栏有4个，到通讯录页面
+                // 底部导航栏有4个，到首页微信页面
                 var tables =
                     rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.TABLES.id)
                 while (tables.isEmpty()) {
@@ -63,7 +63,7 @@ class WechatAccessibility : AccessibilityService() {
             }
         }
         if (WechatData.index == 4) {
-            // 点击第一个
+            // 点击搜到的第一个联系人
             if (currentActivity == WechatActivity.SEARCH.id) {
                 val contact = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.LIST.id)
                 if (contact.isNotEmpty()) {
@@ -74,7 +74,7 @@ class WechatAccessibility : AccessibilityService() {
             }
         }
         if (WechatData.index == 5) {
-            // 点击更多
+            // 聊天界面点击更多
             val more = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.MORE.id)
             if (more.isNotEmpty()) {
                 more.first().click()
@@ -83,7 +83,7 @@ class WechatAccessibility : AccessibilityService() {
             }
         }
         if (WechatData.index == 6) {
-            // 点击视频通话
+            // 点击视频通话菜单
             if (currentActivity == WechatActivity.CHAT.id) {
                 val menu = rootInActiveWindow.findAccessibilityNodeInfosByText("视频通话")
                 if (menu.isNotEmpty()) {
@@ -96,9 +96,9 @@ class WechatAccessibility : AccessibilityService() {
             }
         }
         if (WechatData.index == 7) {
-            // 点击视频通话
+            // 点击视频通话选项
             if (currentActivity == WechatActivity.DIALOG.id || currentActivity == WechatActivity.DIALOG_OLD.id) {
-                val options = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.DIALOG.id)
+                val options = rootInActiveWindow.findAccessibilityNodeInfosByText("视频通话")
                 if (options.isNotEmpty()) {
                     options.first().click()
                     Thread.sleep(500)
