@@ -9,12 +9,14 @@ import android.provider.Settings
 import android.text.TextUtils
 import android.text.TextUtils.SimpleStringSplitter
 import android.widget.Toast
+import com.dc16.wechat_video_call.WechatAccessibility
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 
 /** WechatVideoCallPlugin */
@@ -46,7 +48,7 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         } else if (call.method == "isAccessibilityPermissionEnabled") {
             result.success(isAccessibilitySettingsOn(context))
         } else if (call.method == "videoCall") {
-            val name: String = call.argument("name")
+            val name: String? = call.argument("name")
             if (name != null) {
                 result.success(videoCall(name))
             } else {
@@ -132,7 +134,7 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
 
     fun videoCall(name: String): Boolean {
         Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
-        WechatData.updateValue(name)
+      WechatData.updateValue(name)
         WechatData.updateIndex(1)
         val intent = Intent()
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK)
