@@ -2,6 +2,7 @@
 
 * Add support Android WeChat 8.0.51 (2720).
 * code formatting
+* Support voice call
 
 ## 0.0.1
 

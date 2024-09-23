@@ -1,5 +1,5 @@
 name: wechat_video_call
-description: The Flutter plugin that uses Android accessibility service to automatically dial wechat video calls with one click.
+description: The Flutter plugin that uses Android accessibility service to automatically dial wechat video/voice calls with one click.
   - Enable the APP accessibility service in the system setting [Accessibility].
   - Wechat must be logged in, and the nickname or note for the video call is already in the friends list.
 version: 0.0.2

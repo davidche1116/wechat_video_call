@@ -5,13 +5,28 @@
 ## [English](https://github.com/davidche1116/wechat_video_call/blob/main/README.md) | 中文
 # 微信视频电话
 
-利用Android无障碍服务一键自动拨打微信视频通话的Flutter插件。
+利用Android无障碍服务一键自动拨打微信视频通话、语音通话的Flutter插件。
 
 要使用该功能必须:
 - 在系统设置【无障碍】中将APP无障碍服务开启。
 - 微信必须是登录状态，并且拨打视频通话的昵称或备注已经在好友列表中。
 
 ---
+
+### 平台支持
+
+| Android | iOS | MacOS | Web | Linux | Windows |
+| :-----: | :-: | :---: | :-: | :---: | :-----: |
+|   ✅    |   |     |   |     |       |
+
+### 环境要求
+
+- Flutter >=3.24.0
+- Dart >=3.5.0 <4.0.0
+- Android `minSdk` 24
+- Java 17
+- Android Gradle Plugin >=8.1.0
+- Gradle wrapper >=8.3
 
 ### 插件使用
 请求无障碍权限
