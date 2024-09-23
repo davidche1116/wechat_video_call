@@ -5,6 +5,7 @@ import android.accessibilityservice.GestureDescription
 import android.accessibilityservice.GestureDescription.StrokeDescription
 import android.graphics.Path
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -20,13 +21,13 @@ class WechatAccessibility : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         android.util.Log.d(tag, event?.toString() ?: "null")
         android.util.Log.d(tag, String.format("%d", WechatData.index))
+        val currentActivity = event?.className ?: return
         if (WechatData.index == 1) {
-            val currentActivity = event?.className
-            if (currentActivity != null && currentActivity == WechatActivity.INDEX.id) {
+            if (currentActivity == WechatActivity.INDEX.id) {
                 //1、底部导航栏有4个，到通讯录页面
                 var tables =
                     rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.TABLES.id)
-                while (tables == null || tables.size == 0) {
+                while (tables.isEmpty()) {
                     performGlobalAction(GLOBAL_ACTION_BACK)
                     Thread.sleep(500)
                     tables =
@@ -43,55 +44,66 @@ class WechatAccessibility : AccessibilityService() {
         }
         if (WechatData.index == 2) {
             // 点击搜索
-            val qq =
+            val searchIcon =
                 rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.SEARCH.id)
-            qq[0].click()
-            Thread.sleep(500)
-            WechatData.updateIndex(3)
+            if (searchIcon.isNotEmpty()) {
+                searchIcon.first().click()
+                Thread.sleep(500)
+                WechatData.updateIndex(3)
+            }
         }
         if (WechatData.index == 3) {
             // 输入文字
-            val tt =
+            val input =
                 rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.INPUT.id)
-            tt[0].input(WechatData.value)
-            Thread.sleep(1000)
-            WechatData.updateIndex(4)
+            if (input.isNotEmpty()) {
+                input.first().input(WechatData.value)
+                Thread.sleep(1000)
+                WechatData.updateIndex(4)
+            }
         }
         if (WechatData.index == 4) {
             // 点击第一个
-            val odf = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.LIST.id)
-            odf[0].click()
-            Thread.sleep(500)
-            WechatData.updateIndex(5)
+            if (currentActivity == WechatActivity.SEARCH.id) {
+                val contact = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.LIST.id)
+                if (contact.isNotEmpty()) {
+                    contact.first().click()
+                    Thread.sleep(500)
+                    WechatData.updateIndex(5)
+                }
+            }
         }
         if (WechatData.index == 5) {
             // 点击更多
-            val fq = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.MORE.id)
-            fq[0].click()
-            Thread.sleep(1000)
-            WechatData.updateIndex(6)
+            val more = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.MORE.id)
+            if (more.isNotEmpty()) {
+                more.first().click()
+                Thread.sleep(1000)
+                WechatData.updateIndex(6)
+            }
         }
         if (WechatData.index == 6) {
             // 点击视频通话
-            val currentActivity = event?.className
-            if (currentActivity != null && currentActivity == WechatActivity.CHAT.id) {
-                val ff = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.CHAT_MENU.id)
-                android.util.Log.d("视频通话=", ff[0].getChild(2).toString())
-                var rect: Rect = Rect()
-                ff[0].getChild(2).getBoundsInScreen(rect)
-                performClick(rect.left.toFloat(), rect.top.toFloat())
-                Thread.sleep(500)
-                WechatData.updateIndex(7)
+            if (currentActivity == WechatActivity.CHAT.id) {
+                val menu = rootInActiveWindow.findAccessibilityNodeInfosByText("视频通话")
+                if (menu.isNotEmpty()) {
+                    val rect = Rect()
+                    menu.first().getBoundsInScreen(rect)
+                    performClick(rect.left.toFloat(), rect.top.toFloat())
+                    Thread.sleep(500)
+                    WechatData.updateIndex(7)
+                }
             }
         }
         if (WechatData.index == 7) {
             // 点击视频通话
-            val currentActivity = event?.className
-            if (currentActivity != null && (currentActivity == WechatActivity.DIALOG.id || currentActivity == WechatActivity.DIALOG_OLD.id)) {
-                val fq = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.DIALOG.id)
-                fq[0].click()
-                Thread.sleep(500)
-                WechatData.updateIndex(0)
+            if (currentActivity == WechatActivity.DIALOG.id || currentActivity == WechatActivity.DIALOG_OLD.id) {
+                val options = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.DIALOG.id)
+                if (options.isNotEmpty()) {
+                    options.first().click()
+                    Thread.sleep(500)
+                    WechatData.updateIndex(0)
+                }
             }
         }
     }
@@ -118,11 +130,13 @@ class WechatAccessibility : AccessibilityService() {
     }
 
     private fun performClick(x: Float, y: Float) {
-        val gestureBuilder = GestureDescription.Builder()
-        val path: Path = Path()
-        path.moveTo(x, y)
-        gestureBuilder.addStroke(StrokeDescription(path, 0, 1))
-        val gestureDescription = gestureBuilder.build()
-        dispatchGesture(gestureDescription, null, null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val gestureBuilder = GestureDescription.Builder()
+            val path: Path = Path()
+            path.moveTo(x, y)
+            gestureBuilder.addStroke(StrokeDescription(path, 0, 1))
+            val gestureDescription = gestureBuilder.build()
+            dispatchGesture(gestureDescription, null, null)
+        }
     }
 }
