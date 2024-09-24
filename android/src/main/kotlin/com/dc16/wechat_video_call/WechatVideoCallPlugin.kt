@@ -62,6 +62,7 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
 
     override fun onAttachedToActivity(p0: ActivityPluginBinding) {
         activity = p0.activity
+        p0.addActivityResultListener(this)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
