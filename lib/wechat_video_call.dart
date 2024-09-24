@@ -1,7 +1,6 @@
 import 'wechat_video_call_platform_interface.dart';
 
 class WechatVideoCall {
-
   /// request Accessibility Permission
   static Future<bool> requestAccessibilityPermission() async {
     return WechatVideoCallPlatform.instance.requestAccessibilityPermission();
