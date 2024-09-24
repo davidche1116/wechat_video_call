@@ -36,6 +36,12 @@ class WechatAccessibility : AccessibilityService() {
                 Thread.sleep(100)
                 tables[0].click()
                 WechatData.updateIndex(2)
+            } else if (currentActivity.contains("dialog")) {
+                // 有弹窗，返回2次
+                performGlobalAction(GLOBAL_ACTION_BACK)
+                Thread.sleep(500)
+                performGlobalAction(GLOBAL_ACTION_BACK)
+                Thread.sleep(500)
             } else {
                 // 不在页面，全局返回
                 performGlobalAction(GLOBAL_ACTION_BACK)
