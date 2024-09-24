@@ -1,6 +1,6 @@
 package com.dc16.wechat_video_call
 
-object WechatData {
+object WeChatData {
     var value: String = ""
     fun updateValue(newValue: String) {
         value = newValue

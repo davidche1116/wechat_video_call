@@ -36,7 +36,7 @@ flutter:
     platforms:
       android:
         package: com.dc16.wechat_video_call
-        pluginClass: WechatVideoCallPlugin
+        pluginClass: WeChatVideoCallPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

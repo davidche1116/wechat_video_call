@@ -2,23 +2,23 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'wechat_video_call_method_channel.dart';
 
-abstract class WechatVideoCallPlatform extends PlatformInterface {
+abstract class WeChatVideoCallPlatform extends PlatformInterface {
   /// Constructs a WechatVideoCallPlatform.
-  WechatVideoCallPlatform() : super(token: _token);
+  WeChatVideoCallPlatform() : super(token: _token);
 
   static final Object _token = Object();
 
-  static WechatVideoCallPlatform _instance = MethodChannelWechatVideoCall();
+  static WeChatVideoCallPlatform _instance = MethodChannelWeChatVideoCall();
 
-  /// The default instance of [WechatVideoCallPlatform] to use.
+  /// The default instance of [WeChatVideoCallPlatform] to use.
   ///
-  /// Defaults to [MethodChannelWechatVideoCall].
-  static WechatVideoCallPlatform get instance => _instance;
+  /// Defaults to [MethodChannelWeChatVideoCall].
+  static WeChatVideoCallPlatform get instance => _instance;
 
   /// Platform-specific implementations should set this with their own
-  /// platform-specific class that extends [WechatVideoCallPlatform] when
+  /// platform-specific class that extends [WeChatVideoCallPlatform] when
   /// they register themselves.
-  static set instance(WechatVideoCallPlatform instance) {
+  static set instance(WeChatVideoCallPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
@@ -33,11 +33,11 @@ abstract class WechatVideoCallPlatform extends PlatformInterface {
         'isAccessibilityPermissionEnabled() has not been implemented.');
   }
 
-  Future<bool> videoCall(String name) {
+  Future<bool> videoCall(String name, bool toast) {
     throw UnimplementedError('videoCall() has not been implemented.');
   }
 
-  Future<bool> voiceCall(String name) {
+  Future<bool> voiceCall(String name, bool toast) {
     throw UnimplementedError('voiceCall() has not been implemented.');
   }
 }

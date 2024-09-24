@@ -22,7 +22,7 @@
 ### 环境要求
 
 - Flutter >=3.24.0
-- Dart >=3.5.0 <4.0.0
+- Dart >=3.5.0
 - Android `minSdk` 24
 - Java 17
 - Android Gradle Plugin >=8.1.0
@@ -31,17 +31,17 @@
 ### 插件使用
 请求无障碍权限
 ```dart
-bool ret = await WechatVideoCall.requestAccessibilityPermission();
+bool ret = await WeChatVideoCall.requestAccessibilityPermission();
 ```
 
 检查无障碍权限
 ```dart
-bool ret = await WechatVideoCall.isAccessibilityPermissionEnabled();
+bool ret = await WeChatVideoCall.isAccessibilityPermissionEnabled();
 ```
 
 通过昵称或备注拨打微信视频通话
 ```dart
-bool ret = await WechatVideoCall.videoCall(nickname);
+bool ret = await WeChatVideoCall.videoCall(nickname);
 ```
 
 ### 警告说明

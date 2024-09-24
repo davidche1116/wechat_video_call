@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'wechat_video_call_platform_interface.dart';
 
-/// An implementation of [WechatVideoCallPlatform] that uses method channels.
-class MethodChannelWechatVideoCall extends WechatVideoCallPlatform {
+/// An implementation of [WeChatVideoCallPlatform] that uses method channels.
+class MethodChannelWeChatVideoCall extends WeChatVideoCallPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('wechat_video_call');
@@ -31,10 +31,10 @@ class MethodChannelWechatVideoCall extends WechatVideoCallPlatform {
   }
 
   @override
-  Future<bool> videoCall(String name) async {
+  Future<bool> videoCall(String name, bool toast) async {
     try {
-      return await methodChannel
-          .invokeMethod('videoCall', {'name': name, 'video': true});
+      return await methodChannel.invokeMethod(
+          'videoCall', {'name': name, 'video': true, 'toast': toast});
     } on PlatformException catch (error) {
       debugPrint("$error");
       return false;
@@ -42,10 +42,10 @@ class MethodChannelWechatVideoCall extends WechatVideoCallPlatform {
   }
 
   @override
-  Future<bool> voiceCall(String name) async {
+  Future<bool> voiceCall(String name, bool toast) async {
     try {
-      return await methodChannel
-          .invokeMethod('videoCall', {'name': name, 'video': false});
+      return await methodChannel.invokeMethod(
+          'videoCall', {'name': name, 'video': false, 'toast': toast});
     } on PlatformException catch (error) {
       debugPrint("$error");
       return false;

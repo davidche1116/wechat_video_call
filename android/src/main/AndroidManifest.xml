@@ -7,7 +7,7 @@
     </queries>
 
     <application>
-        <service android:name=".WechatAccessibility"
+        <service android:name=".WeChatAccessibility"
                  android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" android:exported="false">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />

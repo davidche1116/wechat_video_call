@@ -1,23 +1,25 @@
 import 'wechat_video_call_platform_interface.dart';
 
-class WechatVideoCall {
+class WeChatVideoCall {
   /// request Accessibility Permission
   static Future<bool> requestAccessibilityPermission() async {
-    return WechatVideoCallPlatform.instance.requestAccessibilityPermission();
+    return WeChatVideoCallPlatform.instance.requestAccessibilityPermission();
   }
 
   /// check Accessibility Permission
   static Future<bool> isAccessibilityPermissionEnabled() async {
-    return WechatVideoCallPlatform.instance.isAccessibilityPermissionEnabled();
+    return WeChatVideoCallPlatform.instance.isAccessibilityPermissionEnabled();
   }
 
   /// WeChat video call with [name]
-  static Future<bool> videoCall(String name) async {
-    return WechatVideoCallPlatform.instance.videoCall(name);
+  /// [toast] If true, the default toast will show
+  static Future<bool> videoCall(String name, {bool toast = true}) async {
+    return WeChatVideoCallPlatform.instance.videoCall(name, toast);
   }
 
   /// WeChat voice call with [name]
-  static Future<bool> voiceCall(String name) async {
-    return WechatVideoCallPlatform.instance.voiceCall(name);
+  /// [toast] If true, the default toast will show
+  static Future<bool> voiceCall(String name, {bool toast = true}) async {
+    return WeChatVideoCallPlatform.instance.voiceCall(name, toast);
   }
 }

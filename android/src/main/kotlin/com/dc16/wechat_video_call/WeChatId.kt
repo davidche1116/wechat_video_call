@@ -1,6 +1,6 @@
 package com.dc16.wechat_video_call
 
-enum class WechatId(val id: String) {
+enum class WeChatId(val id: String) {
     TABLES("com.tencent.mm:id/icon_tv"),
     SEARCH("com.tencent.mm:id/jha"),
     INPUT("com.tencent.mm:id/d98"),

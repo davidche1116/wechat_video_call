@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    WechatVideoCall.isAccessibilityPermissionEnabled().then((res) {
+    WeChatVideoCall.isAccessibilityPermissionEnabled().then((res) {
       setState(() {
         _accessibilityPermissionEnabled = res;
       });
@@ -44,15 +44,18 @@ class _MyAppState extends State<MyApp> {
             FilledButton(
               onPressed: () async {
                 bool ret =
-                    await WechatVideoCall.requestAccessibilityPermission();
+                    await WeChatVideoCall.requestAccessibilityPermission();
                 debugPrint('requestAccessibilityPermission=$ret');
+                setState(() {
+                  _accessibilityPermissionEnabled = ret;
+                });
               },
               child: const Text('requestAccessibilityPermission'),
             ),
             FilledButton(
               onPressed: () async {
                 bool ret =
-                    await WechatVideoCall.isAccessibilityPermissionEnabled();
+                    await WeChatVideoCall.isAccessibilityPermissionEnabled();
                 debugPrint('isAccessibilityPermissionEnabled=$ret');
                 setState(() {
                   _accessibilityPermissionEnabled = ret;
@@ -69,7 +72,7 @@ class _MyAppState extends State<MyApp> {
             FilledButton(
               onPressed: () async {
                 String name = _controller.text;
-                bool ret = await WechatVideoCall.videoCall(name);
+                bool ret = await WeChatVideoCall.videoCall(name);
                 debugPrint('videoCall=$ret');
                 if (!_nameList.contains(name)) {
                   _nameList.add(name);
@@ -81,7 +84,7 @@ class _MyAppState extends State<MyApp> {
             FilledButton(
               onPressed: () async {
                 String name = _controller.text;
-                bool ret = await WechatVideoCall.voiceCall(name);
+                bool ret = await WeChatVideoCall.voiceCall(name);
                 debugPrint('voiceCall=$ret');
                 if (!_nameList.contains(name)) {
                   _nameList.add(name);

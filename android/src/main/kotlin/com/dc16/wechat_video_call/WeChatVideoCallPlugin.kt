@@ -1,7 +1,6 @@
 package com.dc16.wechat_video_call
 
 import android.app.Activity
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -17,8 +16,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 
-/** WechatVideoCallPlugin */
-class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
+/** WeChatVideoCallPlugin */
+class WeChatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -46,10 +45,11 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         } else if (call.method == "videoCall") {
             val name: String? = call.argument("name")
             val video: Boolean? = call.argument("video")
-            if (name != null && video != null) {
-                result.success(videoCall(name, video))
+            val toast: Boolean? = call.argument("toast")
+            if (name != null && video != null && toast != null) {
+                result.success(videoCall(name, video, toast))
             } else {
-                result.error("UNAVAILABLE", "WechatVideoCall not available.", null)
+                result.error("ERROR", "invalid parameter.", null)
             }
         } else {
             result.notImplemented()
@@ -66,22 +66,13 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-
     }
 
     override fun onReattachedToActivityForConfigChanges(p0: ActivityPluginBinding) {
-
+        onAttachedToActivity(p0)
     }
 
     override fun onDetachedFromActivity() {
-
-    }
-
-    private val actionsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context?, intent: Intent) {
-            pendingResult.success(intent.getIntegerArrayListExtra("actions"))
-        }
     }
 
     override fun onActivityResult(p0: Int, p1: Int, p2: Intent?): Boolean {
@@ -98,12 +89,12 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         return false
     }
 
-    fun isAccessibilitySettingsOn(mContext: Context): Boolean {
+    fun isAccessibilitySettingsOn(p0: Context): Boolean {
         var accessibilityEnabled: Int = 0
-        val service: String = mContext.packageName + "/" + WechatAccessibility::class.java.getCanonicalName()
+        val service: String = p0.packageName + "/" + WeChatAccessibility::class.java.getCanonicalName()
         try {
             accessibilityEnabled = Settings.Secure.getInt(
-                mContext.applicationContext.contentResolver,
+                p0.applicationContext.contentResolver,
                 Settings.Secure.ACCESSIBILITY_ENABLED
             )
         } catch (e: Settings.SettingNotFoundException) {
@@ -112,7 +103,7 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         val mStringColonSplitter: SimpleStringSplitter = SimpleStringSplitter(':')
         if (accessibilityEnabled == 1) {
             val settingValue: String? = Settings.Secure.getString(
-                mContext.applicationContext.contentResolver,
+                p0.applicationContext.contentResolver,
                 Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
             )
             if (settingValue != null) {
@@ -128,17 +119,17 @@ class WechatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         return false
     }
 
-    private fun videoCall(name: String, video: Boolean): Boolean {
-        Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
-        WechatData.updateVideo(video)
-        WechatData.updateValue(name)
-        WechatData.updateIndex(1)
+    private fun videoCall(name: String, video: Boolean, toast: Boolean): Boolean {
+        if (toast) {
+            Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
+        }
+        WeChatData.updateVideo(video)
+        WeChatData.updateValue(name)
+        WeChatData.updateIndex(1)
         val intent = Intent()
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK)
         intent.setClassName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI")
         activity.startActivity(intent)
         return true
     }
-
-
 }

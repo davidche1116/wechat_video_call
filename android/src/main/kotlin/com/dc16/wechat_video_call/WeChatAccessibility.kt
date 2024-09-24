@@ -10,32 +10,32 @@ import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
-class WechatAccessibility : AccessibilityService() {
+class WeChatAccessibility : AccessibilityService() {
 
     private val tag: String = "WechatAccessibilityTag"
 
     override fun onInterrupt() {
-        WechatData.updateIndex(0)
+        WeChatData.updateIndex(0)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val currentActivity = event?.className ?: return
         android.util.Log.d(tag, event.toString())
-        android.util.Log.d(tag, String.format("%d", WechatData.index))
-        if (WechatData.index == 1) {
-            if (currentActivity == WechatActivity.INDEX.id) {
+        android.util.Log.d(tag, String.format("%d", WeChatData.index))
+        if (WeChatData.index == 1) {
+            if (currentActivity == WeChatActivity.INDEX.id) {
                 // 底部导航栏有4个，到首页微信页面
                 var tables =
-                    rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.TABLES.id)
+                    rootInActiveWindow.findAccessibilityNodeInfosByViewId(WeChatId.TABLES.id)
                 while (tables.isEmpty()) {
                     performGlobalAction(GLOBAL_ACTION_BACK)
                     Thread.sleep(500)
                     tables =
-                        rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.TABLES.id)
+                        rootInActiveWindow.findAccessibilityNodeInfosByViewId(WeChatId.TABLES.id)
                 }
                 Thread.sleep(100)
                 tables[0].click()
-                WechatData.updateIndex(2)
+                WeChatData.updateIndex(2)
             } else if (currentActivity.contains("dialog")) {
                 // 有弹窗，返回2次
                 performGlobalAction(GLOBAL_ACTION_BACK)
@@ -48,67 +48,67 @@ class WechatAccessibility : AccessibilityService() {
                 Thread.sleep(500)
             }
         }
-        if (WechatData.index == 2) {
+        if (WeChatData.index == 2) {
             // 点击搜索
             val searchIcon =
-                rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.SEARCH.id)
+                rootInActiveWindow.findAccessibilityNodeInfosByViewId(WeChatId.SEARCH.id)
             if (searchIcon.isNotEmpty()) {
                 searchIcon.first().click()
                 Thread.sleep(500)
-                WechatData.updateIndex(3)
+                WeChatData.updateIndex(3)
             }
         }
-        if (WechatData.index == 3) {
+        if (WeChatData.index == 3) {
             // 输入文字
             val input =
-                rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.INPUT.id)
+                rootInActiveWindow.findAccessibilityNodeInfosByViewId(WeChatId.INPUT.id)
             if (input.isNotEmpty()) {
-                input.first().input(WechatData.value)
+                input.first().input(WeChatData.value)
                 Thread.sleep(1000)
-                WechatData.updateIndex(4)
+                WeChatData.updateIndex(4)
             }
         }
-        if (WechatData.index == 4) {
+        if (WeChatData.index == 4) {
             // 点击搜到的第一个联系人
-            if (currentActivity == WechatActivity.SEARCH.id) {
-                val contact = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.LIST.id)
+            if (currentActivity == WeChatActivity.SEARCH.id) {
+                val contact = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WeChatId.LIST.id)
                 if (contact.isNotEmpty()) {
                     contact.first().click()
                     Thread.sleep(500)
-                    WechatData.updateIndex(5)
+                    WeChatData.updateIndex(5)
                 }
             }
         }
-        if (WechatData.index == 5) {
+        if (WeChatData.index == 5) {
             // 聊天界面点击更多
-            val more = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WechatId.MORE.id)
+            val more = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WeChatId.MORE.id)
             if (more.isNotEmpty()) {
                 more.first().click()
                 Thread.sleep(1000)
-                WechatData.updateIndex(6)
+                WeChatData.updateIndex(6)
             }
         }
-        if (WechatData.index == 6) {
+        if (WeChatData.index == 6) {
             // 点击视频通话菜单
-            if (currentActivity == WechatActivity.CHAT.id) {
-                val menu = rootInActiveWindow.findAccessibilityNodeInfosByText(WechatData.findText(false))
+            if (currentActivity == WeChatActivity.CHAT.id) {
+                val menu = rootInActiveWindow.findAccessibilityNodeInfosByText(WeChatData.findText(false))
                 if (menu.isNotEmpty()) {
                     val rect = Rect()
                     menu.first().getBoundsInScreen(rect)
                     performClick(rect.left.toFloat(), rect.top.toFloat())
                     Thread.sleep(500)
-                    WechatData.updateIndex(7)
+                    WeChatData.updateIndex(7)
                 }
             }
         }
-        if (WechatData.index == 7) {
-            // 点击视频通话选项
-            if (currentActivity == WechatActivity.DIALOG.id || currentActivity == WechatActivity.DIALOG_OLD.id) {
-                val options = rootInActiveWindow.findAccessibilityNodeInfosByText(WechatData.findText(true))
+        if (WeChatData.index == 7) {
+            // 点击视频/语音通话选项
+            if (currentActivity == WeChatActivity.DIALOG.id || currentActivity == WeChatActivity.DIALOG_OLD.id) {
+                val options = rootInActiveWindow.findAccessibilityNodeInfosByText(WeChatData.findText(true))
                 if (options.isNotEmpty()) {
                     options.first().click()
                     Thread.sleep(500)
-                    WechatData.updateIndex(0)
+                    WeChatData.updateIndex(0)
                 }
             }
         }
@@ -126,7 +126,6 @@ class WechatAccessibility : AccessibilityService() {
     private fun AccessibilityNodeInfo?.input(text: String): Boolean {
         this ?: return false
         return if (isEditable) {
-
             val arguments: Bundle = Bundle()
             arguments.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text)
             performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
