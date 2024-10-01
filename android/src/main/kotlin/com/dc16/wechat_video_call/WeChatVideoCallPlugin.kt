@@ -91,7 +91,7 @@ class WeChatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
 
     fun isAccessibilitySettingsOn(p0: Context): Boolean {
         var accessibilityEnabled: Int = 0
-        val service: String = p0.packageName + "/" + WeChatAccessibility::class.java.getCanonicalName()
+        val service: String = p0.packageName + "/" + WeChatAccessibility::class.java.canonicalName
         try {
             accessibilityEnabled = Settings.Secure.getInt(
                 p0.applicationContext.contentResolver,

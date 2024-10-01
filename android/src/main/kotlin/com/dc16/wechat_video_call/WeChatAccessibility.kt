@@ -95,7 +95,7 @@ class WeChatAccessibility : AccessibilityService() {
                 if (menu.isNotEmpty()) {
                     val rect = Rect()
                     menu.first().getBoundsInScreen(rect)
-                    performClick(rect.left.toFloat(), rect.top.toFloat())
+                    performClick(rect.exactCenterX(), rect.exactCenterY())
                     Thread.sleep(500)
                     WeChatData.updateIndex(7)
                 }
