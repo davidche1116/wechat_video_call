@@ -1,3 +1,6 @@
+## 1.0.1
+* Update dependency
+
 ## 1.0.0
 * Fix: requestAccessibilityPermission is no return value
 * Fix: WeChat spelling
