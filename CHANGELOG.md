@@ -1,3 +1,6 @@
+## 1.0.2
+* Add support Android WeChat 8.0.54 (2760).
+
 ## 1.0.1
 * Update dependency
 

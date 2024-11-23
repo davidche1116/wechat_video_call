@@ -103,7 +103,9 @@ class WeChatAccessibility : AccessibilityService() {
         }
         if (WeChatData.index == 7) {
             // 点击视频/语音通话选项
-            if (currentActivity == WeChatActivity.DIALOG.id || currentActivity == WeChatActivity.DIALOG_OLD.id) {
+            if (currentActivity.contains(WeChatActivity.DIALOG.id)
+                || currentActivity == WeChatActivity.DIALOG_OLD.id
+            ) {
                 val options = rootInActiveWindow.findAccessibilityNodeInfosByText(WeChatData.findText(true))
                 if (options.isNotEmpty()) {
                     options.first().click()
