@@ -57,6 +57,10 @@ __感谢所有的贡献者!__
     <img src="https://contrib.rocks/image?repo=davidche1116/wechat_video_call" />
 </a>
 
+### 示例APP
+[打电话](https://github.com/davidche1116/CallApp)
+[下载](https://github.com/davidche1116/CallApp/releases)
+
 ### 感谢
 [flutter_accessibility_service](https://pub.dev/packages/flutter_accessibility_service)  
 [ssss-yao/xiangjian](https://github.com/ssss-yao/xiangjian)  
