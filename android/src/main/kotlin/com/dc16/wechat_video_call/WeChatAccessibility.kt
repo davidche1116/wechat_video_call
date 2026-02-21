@@ -22,6 +22,7 @@ class WeChatAccessibility : AccessibilityService() {
         val currentActivity = event?.className ?: return
         android.util.Log.d(tag, event.toString())
         android.util.Log.d(tag, String.format("%d", WeChatData.index))
+
         if (WeChatData.index == 1) {
             if (currentActivity == WeChatActivity.INDEX.id) {
                 // 底部导航栏有4个，到首页微信页面
@@ -48,6 +49,7 @@ class WeChatAccessibility : AccessibilityService() {
                 Thread.sleep(500)
             }
         }
+
         if (WeChatData.index == 2) {
             // 点击搜索
             val searchIcon =
@@ -58,6 +60,7 @@ class WeChatAccessibility : AccessibilityService() {
                 WeChatData.updateIndex(3)
             }
         }
+
         if (WeChatData.index == 3) {
             // 输入文字
             val input =
@@ -68,6 +71,7 @@ class WeChatAccessibility : AccessibilityService() {
                 WeChatData.updateIndex(4)
             }
         }
+
         if (WeChatData.index == 4) {
             // 点击搜到的第一个联系人
             if (currentActivity == WeChatActivity.SEARCH.id) {
@@ -79,34 +83,58 @@ class WeChatAccessibility : AccessibilityService() {
                 }
             }
         }
+
+        // ==================== 下面是重点修改的部分（适配微信 8.0.0.69） ====================
+
         if (WeChatData.index == 5) {
-            // 聊天界面点击更多
-            val more = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WeChatId.MORE.id)
+            // 聊天界面点击更多（+按钮） - 优化版
+            var more = rootInActiveWindow.findAccessibilityNodeInfosByViewId(WeChatId.MORE.id)
+            if (more.isEmpty()) more = rootInActiveWindow.findAccessibilityNodeInfosByText("+")
+            if (more.isEmpty()) more = rootInActiveWindow.findAccessibilityNodeInfosByText("更多")
             if (more.isNotEmpty()) {
                 more.first().click()
-                Thread.sleep(1000)
+                Thread.sleep(1500)  // 增加等待，让菜单完全弹出
                 WeChatData.updateIndex(6)
             }
         }
+
         if (WeChatData.index == 6) {
-            // 点击视频通话菜单
+            // 点击视频通话菜单 - 优化版（专治8.0.0.69卡在列表）
             if (currentActivity == WeChatActivity.CHAT.id) {
-                val menu = rootInActiveWindow.findAccessibilityNodeInfosByText(WeChatData.findText(false))
+                var menu = rootInActiveWindow.findAccessibilityNodeInfosByText(WeChatData.findText(false))
+                if (menu.isEmpty()) menu = rootInActiveWindow.findAccessibilityNodeInfosByText("视频通话")
+                if (menu.isEmpty()) menu = rootInActiveWindow.findAccessibilityNodeInfosByText("视频")
+                if (menu.isEmpty()) {
+                    menu = rootInActiveWindow.findAccessibilityNodeInfosByText("").filter {
+                        it.text?.contains("视频通话") == true ||
+                        it.contentDescription?.contains("视频通话") == true
+                    }
+                }
                 if (menu.isNotEmpty()) {
                     val rect = Rect()
                     menu.first().getBoundsInScreen(rect)
                     performClick(rect.exactCenterX(), rect.exactCenterY())
-                    Thread.sleep(500)
+                    Thread.sleep(1000)
                     WeChatData.updateIndex(7)
+                } else {
+                    Thread.sleep(600) // 没找到就继续等待下次事件
                 }
             }
         }
+
         if (WeChatData.index == 7) {
-            // 点击视频/语音通话选项
+            // 点击视频/语音通话选项 - 优化版
             if (currentActivity.contains(WeChatActivity.DIALOG.id)
                 || currentActivity == WeChatActivity.DIALOG_OLD.id
             ) {
-                val options = rootInActiveWindow.findAccessibilityNodeInfosByText(WeChatData.findText(true))
+                var options = rootInActiveWindow.findAccessibilityNodeInfosByText(WeChatData.findText(true))
+                if (options.isEmpty()) options = rootInActiveWindow.findAccessibilityNodeInfosByText("视频通话")
+                if (options.isEmpty()) {
+                    options = rootInActiveWindow.findAccessibilityNodeInfosByText("").filter {
+                        it.text?.contains("视频通话") == true ||
+                        it.contentDescription?.contains("视频通话") == true
+                    }
+                }
                 if (options.isNotEmpty()) {
                     options.first().click()
                     Thread.sleep(500)
@@ -116,6 +144,7 @@ class WeChatAccessibility : AccessibilityService() {
         }
     }
 
+    // ==================== 下面是原来的辅助函数，不用改 ====================
     private fun AccessibilityNodeInfo?.click(): Boolean {
         this ?: return false
         return if (isClickable) {
