@@ -1,3 +1,6 @@
+## 1.0.3
+* Test support Android WeChat 8.0.69 (3040).
+* 
 ## 1.0.2
 * Add support Android WeChat 8.0.54 (2760).
 
