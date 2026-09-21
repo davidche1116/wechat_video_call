@@ -12,7 +12,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final _controller = TextEditingController();
   final List<String> _nameList = [];
   bool _accessibilityPermissionEnabled = false;
@@ -20,10 +20,29 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    WeChatVideoCall.isAccessibilityPermissionEnabled().then((res) {
-      setState(() {
-        _accessibilityPermissionEnabled = res;
-      });
+    WidgetsBinding.instance.addObserver(this);
+    _refreshPermission();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshPermission();
+    }
+  }
+
+  Future<void> _refreshPermission() async {
+    final res = await WeChatVideoCall.isAccessibilityPermissionEnabled();
+    if (!mounted) return;
+    setState(() {
+      _accessibilityPermissionEnabled = res;
     });
   }
 
@@ -46,20 +65,15 @@ class _MyAppState extends State<MyApp> {
                 bool ret =
                     await WeChatVideoCall.requestAccessibilityPermission();
                 debugPrint('requestAccessibilityPermission=$ret');
-                setState(() {
-                  _accessibilityPermissionEnabled = ret;
-                });
+                await _refreshPermission();
               },
               child: const Text('requestAccessibilityPermission'),
             ),
             FilledButton(
               onPressed: () async {
-                bool ret =
-                    await WeChatVideoCall.isAccessibilityPermissionEnabled();
-                debugPrint('isAccessibilityPermissionEnabled=$ret');
-                setState(() {
-                  _accessibilityPermissionEnabled = ret;
-                });
+                await _refreshPermission();
+                debugPrint(
+                    'isAccessibilityPermissionEnabled=$_accessibilityPermissionEnabled');
               },
               child: const Text('isAccessibilityPermissionEnabled'),
             ),
@@ -71,10 +85,14 @@ class _MyAppState extends State<MyApp> {
             ),
             FilledButton(
               onPressed: () async {
-                String name = _controller.text;
+                final name = _controller.text.trim();
+                if (name.isEmpty) {
+                  debugPrint('videoCall: name is empty');
+                  return;
+                }
                 bool ret = await WeChatVideoCall.videoCall(name);
                 debugPrint('videoCall=$ret');
-                if (!_nameList.contains(name)) {
+                if (ret && !_nameList.contains(name)) {
                   _nameList.add(name);
                   setState(() {});
                 }
@@ -83,10 +101,14 @@ class _MyAppState extends State<MyApp> {
             ),
             FilledButton(
               onPressed: () async {
-                String name = _controller.text;
+                final name = _controller.text.trim();
+                if (name.isEmpty) {
+                  debugPrint('voiceCall: name is empty');
+                  return;
+                }
                 bool ret = await WeChatVideoCall.voiceCall(name);
                 debugPrint('voiceCall=$ret');
-                if (!_nameList.contains(name)) {
+                if (ret && !_nameList.contains(name)) {
                   _nameList.add(name);
                   setState(() {});
                 }

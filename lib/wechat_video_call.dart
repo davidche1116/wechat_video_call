@@ -13,25 +13,24 @@ class WeChatVideoCall {
     return WeChatVideoCallPlatform.instance.isAccessibilityPermissionEnabled();
   }
 
-  /// WeChat video call with [name].
-  /// [name] is the remark/nickname. It is converted to pinyin for keyboard
-  /// typing (e.g. "张三" -> "zhangsan"); non-Chinese characters are kept
-  /// as-is. Note: polyphonic Chinese characters may convert incorrectly.
-  /// [toast] If true, the default toast will show.
-  /// Note: only the call initiation is automated; there is no result
-  /// callback for whether the call is answered.
+  /// WeChat video call with [name] (remark/nickname in the friends list).
+  ///
+  /// Native side pastes [name] into WeChat search via clipboard + long-press,
+  /// so Chinese names work directly. [pinyin] is still sent as a fallback
+  /// query string (e.g. "张三" -> "zhangsan") when clipboard typing is not used.
+  /// Returns false when the accessibility service is off, WeChat is missing,
+  /// or [name] is blank. This only automates dialing — there is no callback
+  /// for whether the callee answers.
   static Future<bool> videoCall(String name, {bool toast = true}) async {
     return WeChatVideoCallPlatform.instance.videoCall(name, _toPinyin(name), toast);
   }
 
-  /// WeChat voice call with [name].
-  /// See [videoCall] for [name] format.
-  /// [toast] If true, the default toast will show
+  /// WeChat voice call with [name]. See [videoCall].
   static Future<bool> voiceCall(String name, {bool toast = true}) async {
     return WeChatVideoCallPlatform.instance.voiceCall(name, _toPinyin(name), toast);
   }
 
-  /// Chinese -> pinyin (letters/digits only, lowercase) for keyboard typing.
+  /// Chinese -> pinyin (letters/digits only, lowercase) fallback query.
   static String _toPinyin(String name) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return '';
@@ -50,8 +49,8 @@ class WeChatVideoCall {
     return WeChatVideoCallPlatform.instance.cancel();
   }
 
-  /// Tap the hang-up button of the ongoing call (coordinate based,
-  /// see TESTING_NOTES.md; may need calibration per device).
+  /// Tap the hang-up button of the ongoing call (coordinate based;
+  /// may need calibration via [setCoordinate] on some devices).
   static Future<bool> hangUp() async {
     return WeChatVideoCallPlatform.instance.hangUp();
   }

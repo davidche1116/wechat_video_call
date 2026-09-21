@@ -60,24 +60,14 @@ object WeChatCoords {
 
     // 由魅族 20 基准像素换算：px / 2.8125
     private val anchors: Map<String, Anchor> = mapOf(
-        // 892,191 → 右 188px=66.9dp，状态栏底 +75px=26.7dp
         KEY_SEARCH_ICON to Anchor.TopBar(fromEndDp = 66.9f, fromStatusBarBottomDp = 26.7f),
-        // 135,2290 → 左 48dp，底 110px=39.1dp
         KEY_HOME_TAB to Anchor.BottomBar(fromStartDp = 48f, fromBottomDp = 39.1f),
-        // 540,200 → 左 192dp，状态栏底 +84px=29.9dp
         KEY_SEARCH_BOX to Anchor.TopBar(fromStartDp = 192f, fromStatusBarBottomDp = 29.9f),
-        // 148,356 → 左 52.6dp，状态栏底 +240px=85.3dp
         KEY_PASTE_POPUP to Anchor.TopBar(fromStartDp = 52.6f, fromStatusBarBottomDp = 85.3f),
-        // 450,420 → 左 160dp，状态栏底 +304px=108.1dp
         KEY_SEARCH_RESULT to Anchor.TopBar(fromStartDp = 160f, fromStatusBarBottomDp = 108.1f),
-        // 1013,2316 → 右 67px=23.8dp，底 84px=29.9dp
         KEY_PLUS_BUTTON to Anchor.BottomBar(fromEndDp = 23.8f, fromBottomDp = 29.9f),
-        // + 面板/确认框：底部弹层，相对内容区更稳
-        // 659,1723 → fy=(1723-116)/2284≈0.704
         KEY_VIDEO_MENU to Anchor.ContentRelative(fx = 659f / 1080f, fyContent = 0.704f),
-        // 640,2038 → fy=(2038-116)/2284≈0.842
         KEY_VIDEO_CONFIRM to Anchor.ContentRelative(fx = 640f / 1080f, fyContent = 0.842f),
-        // 640,1770 → fy=(1770-116)/2284≈0.724
         KEY_VOICE_CONFIRM to Anchor.ContentRelative(fx = 640f / 1080f, fyContent = 0.724f),
         // 通话页红键截屏实测约 (540,2170)（2045 会点空）
         KEY_HANG_UP to Anchor.BottomBar(fromStartDp = 192f, fromBottomDp = 81.8f),
@@ -85,14 +75,14 @@ object WeChatCoords {
 
     /**
      * 按当前显示度量解析绝对像素。
-     * 自定义覆盖优先：仍为全屏相对坐标 0..1。
+     * 自定义覆盖优先：全屏相对坐标 0..1。
      */
     fun resolve(key: String, snap: WeChatDisplay.Snapshot): Pair<Float, Float>? {
         val override = WeChatData.customCoords[key]
         if (override != null) {
             return Pair(override.first * snap.widthPx, override.second * snap.heightPx)
         }
-        val anchor = anchors[key] ?: return legacyRelative(key, snap)
+        val anchor = anchors[key] ?: return null
         return when (anchor) {
             is Anchor.TopBar -> {
                 val x = when {
@@ -121,27 +111,5 @@ object WeChatCoords {
                 Pair(x, y)
             }
         }
-    }
-
-    /** 兼容旧调用：仅宽高时按魅族比例估算（状态栏按 116/2400 比例）。 */
-    fun resolve(key: String, widthPx: Int, heightPx: Int): Pair<Float, Float>? {
-        val sb = (heightPx * (116f / 2400f)).toInt()
-        return resolve(
-            key,
-            WeChatDisplay.Snapshot(
-                widthPx = widthPx,
-                heightPx = heightPx,
-                density = 2.8125f * (widthPx / 1080f),
-                statusBarPx = sb,
-                navigationBarPx = 0,
-            ),
-        )
-    }
-
-    private val legacyRelative: Map<String, Pair<Float, Float>> = emptyMap()
-
-    private fun legacyRelative(key: String, snap: WeChatDisplay.Snapshot): Pair<Float, Float>? {
-        val rel = legacyRelative[key] ?: return null
-        return Pair(rel.first * snap.widthPx, rel.second * snap.heightPx)
     }
 }
