@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
             TextField(
               controller: _controller,
               decoration: const InputDecoration(
-                hintText: 'WeChat Nickname',
+                hintText: '备注/昵称 (中文直输优先, 拼音亦可)',
               ),
             ),
             FilledButton(
@@ -92,6 +92,20 @@ class _MyAppState extends State<MyApp> {
                 }
               },
               child: const Text('VoiceCall'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                bool ret = await WeChatVideoCall.cancel();
+                debugPrint('cancel=$ret');
+              },
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                bool ret = await WeChatVideoCall.hangUp();
+                debugPrint('hangUp=$ret');
+              },
+              child: const Text('HangUp'),
             ),
             Wrap(spacing: 10, children: [
               for (String name in _nameList)

@@ -31,10 +31,10 @@ class MethodChannelWeChatVideoCall extends WeChatVideoCallPlatform {
   }
 
   @override
-  Future<bool> videoCall(String name, bool toast) async {
+  Future<bool> videoCall(String name, String pinyin, bool toast) async {
     try {
-      return await methodChannel.invokeMethod(
-          'videoCall', {'name': name, 'video': true, 'toast': toast});
+      return await methodChannel.invokeMethod('videoCall',
+          {'name': name, 'pinyin': pinyin, 'video': true, 'toast': toast});
     } on PlatformException catch (error) {
       debugPrint("$error");
       return false;
@@ -42,10 +42,41 @@ class MethodChannelWeChatVideoCall extends WeChatVideoCallPlatform {
   }
 
   @override
-  Future<bool> voiceCall(String name, bool toast) async {
+  Future<bool> voiceCall(String name, String pinyin, bool toast) async {
     try {
-      return await methodChannel.invokeMethod(
-          'videoCall', {'name': name, 'video': false, 'toast': toast});
+      return await methodChannel.invokeMethod('videoCall',
+          {'name': name, 'pinyin': pinyin, 'video': false, 'toast': toast});
+    } on PlatformException catch (error) {
+      debugPrint("$error");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> cancel() async {
+    try {
+      return await methodChannel.invokeMethod('cancel');
+    } on PlatformException catch (error) {
+      debugPrint("$error");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> hangUp() async {
+    try {
+      return await methodChannel.invokeMethod('hangUp');
+    } on PlatformException catch (error) {
+      debugPrint("$error");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> setCoordinate(String key, double fx, double fy) async {
+    try {
+      return await methodChannel
+          .invokeMethod('setCoordinate', {'key': key, 'fx': fx, 'fy': fy});
     } on PlatformException catch (error) {
       debugPrint("$error");
       return false;

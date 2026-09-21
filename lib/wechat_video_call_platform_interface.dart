@@ -33,11 +33,26 @@ abstract class WeChatVideoCallPlatform extends PlatformInterface {
         'isAccessibilityPermissionEnabled() has not been implemented.');
   }
 
-  Future<bool> videoCall(String name, bool toast) {
+  Future<bool> videoCall(String name, String pinyin, bool toast) {
     throw UnimplementedError('videoCall() has not been implemented.');
   }
 
-  Future<bool> voiceCall(String name, bool toast) {
+  Future<bool> voiceCall(String name, String pinyin, bool toast) {
     throw UnimplementedError('voiceCall() has not been implemented.');
+  }
+
+  Future<bool> cancel() {
+    throw UnimplementedError('cancel() has not been implemented.');
+  }
+
+  Future<bool> hangUp() {
+    throw UnimplementedError('hangUp() has not been implemented.');
+  }
+
+  /// Override a coordinate point at runtime for device adaptation.
+  /// [key] one of: searchIcon, searchResult, plusButton, videoMenu,
+  /// videoConfirm, voiceConfirm, hangUp. [fx]/[fy] are fractions 0..1.
+  Future<bool> setCoordinate(String key, double fx, double fy) {
+    throw UnimplementedError('setCoordinate() has not been implemented.');
   }
 }
