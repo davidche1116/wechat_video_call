@@ -353,12 +353,13 @@ class WeChatAccessibility : AccessibilityService() {
      * @return 手势是否已下发（true 不代表微信已响应）。
      */
     fun tap(key: String): Boolean {
-        val metrics = resources.displayMetrics
-        val point = WeChatCoords.resolve(key, metrics.widthPixels, metrics.heightPixels)
+        val snap = WeChatDisplay.snapshot(resources)
+        val point = WeChatCoords.resolve(key, snap)
         if (point == null) {
-            android.util.Log.e(TAG, "tap: unknown coord key=$key")
+            android.util.Log.e(TAG, "tap: unknown coord key=$key display=${WeChatDisplay.describe(snap)}")
             return false
         }
+        android.util.Log.i(TAG, "tap[$key] resolve=${WeChatDisplay.describe(snap)} -> (${point.first},${point.second})")
         return dispatchTap(point.first, point.second, key)
     }
 
@@ -417,8 +418,8 @@ class WeChatAccessibility : AccessibilityService() {
 
     /** 按 key 长按（用于调出“粘贴”菜单等），纯手势，不依赖节点树。 */
     fun longPress(key: String, durationMs: Long): Boolean {
-        val metrics = resources.displayMetrics
-        val point = WeChatCoords.resolve(key, metrics.widthPixels, metrics.heightPixels)
+        val snap = WeChatDisplay.snapshot(resources)
+        val point = WeChatCoords.resolve(key, snap)
         if (point == null) {
             android.util.Log.e(TAG, "longPress: unknown coord key=$key")
             return false

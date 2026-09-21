@@ -8,8 +8,8 @@ package com.dc16.wechat_video_call
  * - findAccessibilityNodeInfosByViewId 返回的节点 bounds 为 (0,0,0,0)
  * - performAction 返回 true 但不执行
  * 
- * 当前方案使用坐标点击 (input tap) + 拼音搜索 (input text)
- * 坐标配置请参见 WeChatCoords.kt
+ * 当前方案: dispatchGesture 结构锚点坐标 + 剪贴板长按粘贴
+ * 坐标配置请参见 WeChatCoords.kt / WeChatDisplay.kt
  */
 enum class WeChatId(val id: String) {
     TABLES("com.tencent.mm:id/icon_tv"),
