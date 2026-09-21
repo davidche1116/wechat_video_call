@@ -1,6 +1,13 @@
+## 1.0.4
+* Support Android WeChat 8.0.78 (3180): dial via `dispatchGesture` coordinates instead of the blocked accessibility node tree.
+* Adaptive coordinates using status bar / navigation bar structural anchors; runtime override via `setCoordinate`.
+* Three-level search input fallback (ACTION_SET_TEXT → EditText → clipboard paste).
+* Add `cancel()` and `hangUp()` APIs; harden dialing pre-checks and session cleanup.
+* Remove deprecated node ID scheme; update GitHub Actions publish workflow.
+
 ## 1.0.3
 * Test support Android WeChat 8.0.69 (3040).
-* 
+
 ## 1.0.2
 * Add support Android WeChat 8.0.54 (2760).
 
