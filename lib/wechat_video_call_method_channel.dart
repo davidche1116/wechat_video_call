@@ -31,10 +31,22 @@ class MethodChannelWeChatVideoCall extends WeChatVideoCallPlatform {
   }
 
   @override
-  Future<bool> videoCall(String name, String pinyin, bool toast) async {
+  Future<bool> videoCall(
+    String name,
+    String pinyin,
+    bool toast, {
+    double delayScale = 1.0,
+    int pauseAfterStepMs = 0,
+  }) async {
     try {
-      return await methodChannel.invokeMethod('videoCall',
-          {'name': name, 'pinyin': pinyin, 'video': true, 'toast': toast});
+      return await methodChannel.invokeMethod('videoCall', {
+        'name': name,
+        'pinyin': pinyin,
+        'video': true,
+        'toast': toast,
+        'delayScale': delayScale,
+        'pauseAfterStepMs': pauseAfterStepMs,
+      });
     } on PlatformException catch (error) {
       debugPrint("$error");
       return false;
@@ -42,10 +54,22 @@ class MethodChannelWeChatVideoCall extends WeChatVideoCallPlatform {
   }
 
   @override
-  Future<bool> voiceCall(String name, String pinyin, bool toast) async {
+  Future<bool> voiceCall(
+    String name,
+    String pinyin,
+    bool toast, {
+    double delayScale = 1.0,
+    int pauseAfterStepMs = 0,
+  }) async {
     try {
-      return await methodChannel.invokeMethod('videoCall',
-          {'name': name, 'pinyin': pinyin, 'video': false, 'toast': toast});
+      return await methodChannel.invokeMethod('videoCall', {
+        'name': name,
+        'pinyin': pinyin,
+        'video': false,
+        'toast': toast,
+        'delayScale': delayScale,
+        'pauseAfterStepMs': pauseAfterStepMs,
+      });
     } on PlatformException catch (error) {
       debugPrint("$error");
       return false;

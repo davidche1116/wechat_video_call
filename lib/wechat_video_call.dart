@@ -21,13 +21,37 @@ class WeChatVideoCall {
   /// Returns false when the accessibility service is off, WeChat is missing,
   /// or [name] is blank. This only automates dialing — there is no callback
   /// for whether the callee answers.
-  static Future<bool> videoCall(String name, {bool toast = true}) async {
-    return WeChatVideoCallPlatform.instance.videoCall(name, _toPinyin(name), toast);
+  /// [delayScale] multiplies native step delays (>1 = slow debug).
+  /// [pauseAfterStepMs] extra wait after each step for screenshot observation.
+  static Future<bool> videoCall(
+    String name, {
+    bool toast = true,
+    double delayScale = 1.0,
+    int pauseAfterStepMs = 0,
+  }) async {
+    return WeChatVideoCallPlatform.instance.videoCall(
+      name,
+      _toPinyin(name),
+      toast,
+      delayScale: delayScale,
+      pauseAfterStepMs: pauseAfterStepMs,
+    );
   }
 
   /// WeChat voice call with [name]. See [videoCall].
-  static Future<bool> voiceCall(String name, {bool toast = true}) async {
-    return WeChatVideoCallPlatform.instance.voiceCall(name, _toPinyin(name), toast);
+  static Future<bool> voiceCall(
+    String name, {
+    bool toast = true,
+    double delayScale = 1.0,
+    int pauseAfterStepMs = 0,
+  }) async {
+    return WeChatVideoCallPlatform.instance.voiceCall(
+      name,
+      _toPinyin(name),
+      toast,
+      delayScale: delayScale,
+      pauseAfterStepMs: pauseAfterStepMs,
+    );
   }
 
   /// Chinese -> pinyin (letters/digits only, lowercase) fallback query.
@@ -60,6 +84,8 @@ class WeChatVideoCall {
   static const String coordHomeTab = 'homeTab';
   static const String coordSearchBox = 'searchBox';
   static const String coordPastePopup = 'pastePopup';
+  static const String coordImeClipboard = 'imeClipboard';
+  static const String coordImeClipboardFirst = 'imeClipboardFirst';
   static const String coordSearchResult = 'searchResult';
   static const String coordPlusButton = 'plusButton';
   static const String coordVideoMenu = 'videoMenu';

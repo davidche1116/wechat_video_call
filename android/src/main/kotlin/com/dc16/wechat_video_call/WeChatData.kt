@@ -13,14 +13,19 @@ object WeChatData {
     /** 当前会话开始时间（毫秒），用于超时看门狗。 */
     @Volatile var sessionStartAt: Long = 0
 
-    /**
-     * 运行时坐标覆盖: key(见 WeChatCoords.KEYS) -> Pair(fx, fy)，
-     * fx/fy 为相对坐标，取值 0..1。
-     */
+    /** 运行时坐标覆盖: key -> Pair(fx, fy)，全屏相对 0..1。 */
     val customCoords: MutableMap<String, Pair<Float, Float>> = mutableMapOf()
 
-    fun updateValue(newValue: String) {
-        value = newValue
+    /** 步进延时倍率：>1 用于真机慢速观察/标定（例如 3~5）。 */
+    @Volatile var delayScale: Float = 1f
+
+    /** 每步手势完成后的额外停顿，便于截屏观察。 */
+    @Volatile var pauseAfterStepMs: Long = 0L
+
+    fun delay(ms: Long): Long {
+        val scale = delayScale
+        if (scale <= 1f) return ms
+        return (ms * scale).toLong().coerceAtLeast(ms)
     }
 
     fun updateIndex(newValue: Int) {

@@ -33,11 +33,23 @@ abstract class WeChatVideoCallPlatform extends PlatformInterface {
         'isAccessibilityPermissionEnabled() has not been implemented.');
   }
 
-  Future<bool> videoCall(String name, String pinyin, bool toast) {
+  Future<bool> videoCall(
+    String name,
+    String pinyin,
+    bool toast, {
+    double delayScale = 1.0,
+    int pauseAfterStepMs = 0,
+  }) {
     throw UnimplementedError('videoCall() has not been implemented.');
   }
 
-  Future<bool> voiceCall(String name, String pinyin, bool toast) {
+  Future<bool> voiceCall(
+    String name,
+    String pinyin,
+    bool toast, {
+    double delayScale = 1.0,
+    int pauseAfterStepMs = 0,
+  }) {
     throw UnimplementedError('voiceCall() has not been implemented.');
   }
 

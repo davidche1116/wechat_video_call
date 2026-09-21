@@ -44,6 +44,14 @@ class WeChatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 val pinyin = call.argument<String>("pinyin")
                 val video = call.argument<Boolean>("video")
                 val toast = call.argument<Boolean>("toast")
+                val delayScale = call.argument<Double>("delayScale")
+                val pauseAfterStepMs = call.argument<Int>("pauseAfterStepMs")
+                if (delayScale != null) {
+                    WeChatData.delayScale = delayScale.toFloat().coerceIn(0.5f, 10f)
+                }
+                if (pauseAfterStepMs != null) {
+                    WeChatData.pauseAfterStepMs = pauseAfterStepMs.toLong().coerceIn(0L, 15_000L)
+                }
                 if (name == null || video == null || toast == null) {
                     result.error("ERROR", "invalid parameter.", null)
                 } else {
@@ -196,7 +204,10 @@ class WeChatVideoCallPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         WeChatAccessibility.instance?.prepareNewSession(query)
         return try {
             val intent = Intent().apply {
-                flags = FLAG_ACTIVITY_NEW_TASK
+                // 必须让微信到前台，否则 dispatchGesture 会点到调用方 App
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
                 setClassName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI")
             }
             context.startActivity(intent)

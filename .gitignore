@@ -27,3 +27,8 @@ migrate_working_dir/
 **/doc/api/
 .dart_tool/
 build/
+
+# Local verification screenshots / device logs (may contain private WeChat UI)
+.verify/
+verify_meizu/
+verify_redmi/
