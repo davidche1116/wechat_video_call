@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -26,9 +28,14 @@ migrate_working_dir/
 /pubspec.lock
 **/doc/api/
 .dart_tool/
-build/
+.flutter-plugins-dependencies
+/build/
+/coverage/
 
-# Local verification screenshots / device logs (may contain private WeChat UI)
-.verify/
-verify_meizu/
-verify_redmi/
+# Local machine paths (SDK / Flutter locations)
+**/local.properties
+
+# Internal scratch / review artifacts
+.rev_*
+.review_*
+.workbuddy/

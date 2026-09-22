@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">用于按用户校准的坐标自动点击微信，完成搜索联系人并拨出视频/语音通话。不读取聊天内容，不上传界面信息。</string>
+</resources>

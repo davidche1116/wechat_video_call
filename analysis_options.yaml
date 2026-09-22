@@ -1,8 +1,19 @@
+include: package:flutter_lints/flutter.yaml
+
 analyzer:
   exclude:
     - build/**
     - android/**
-include: package:flutter_lints/flutter.yaml
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+linter:
+  rules:
+    - public_member_api_docs
+    - unawaited_futures
+    - prefer_const_constructors
+    - always_declare_return_types
+    - avoid_dynamic_calls

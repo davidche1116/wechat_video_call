@@ -1,16 +1,28 @@
 # wechat_video_call_example
 
-Demonstrates how to use the wechat_video_call plugin.
+Minimal host for the `wechat_video_call` plugin. The demo only calls plugin APIs —
+permissions, the native floating calibration wizard, config import/export, and dialing all live inside the plugin.
 
-## Getting Started
+## Run
 
-This project is a starting point for a Flutter application.
+```bash
+cd example
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+Requires an Android device/emulator with WeChat installed and logged in.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Feature tour
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. **Status chips** — accessibility / overlay / WeChat (health) and calibration state (neutral).
+2. **Permissions** — open accessibility & overlay settings (re-checked on app resume).
+3. **Calibration wizard** — launches the plugin's floating calibration UI over WeChat.
+4. **Config IO** — export / import schemaVersion-2 JSON, reset one step or all.
+5. **Dial flow** — `videoCall` / `voiceCall` / `cancel` / `hangUp`.
+6. **Event log** — live EventChannel stream (`sessionStarted`, `stepProgress`, `sessionFailed`, …).
+
+## Notes
+
+- `videoCall` returns whether the session *started*, not whether the callee answered.
+- After granting permissions in system settings, return to the app — the status chips refresh on resume.
+- See the plugin [README](../README.md) for calibration step ids and API docs.
