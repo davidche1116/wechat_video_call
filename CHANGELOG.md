@@ -1,3 +1,13 @@
+## 2.0.1
+
+### Performance
+
+- P0 timing: post-step waits capped at 200–1000ms (was 1500–3500ms hardcoded).
+- Dial plan now uses `CallStep.delayAfterMs` / `CallTiming` instead of longer
+  hardcoded `buildPlan` values.
+- New `CallTiming.launchSettleMs` (default 500) replaces the fixed 2200ms
+  first-gesture wait after opening WeChat.
+
 ## 2.0.0
 
 ### Breaking migration from 1.x

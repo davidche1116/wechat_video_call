@@ -1,6 +1,6 @@
 name: wechat_video_call
 description: Flutter plugin that dials WeChat video/voice calls via user-calibrated accessibility gestures.
-version: 2.0.0
+version: 2.0.1
 homepage: https://github.com/davidche1116/wechat_video_call
 repository: https://github.com/davidche1116/wechat_video_call
 issue_tracker: https://github.com/davidche1116/wechat_video_call/issues

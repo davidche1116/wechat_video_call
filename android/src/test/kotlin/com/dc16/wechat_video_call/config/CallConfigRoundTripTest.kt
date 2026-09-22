@@ -20,13 +20,15 @@ class CallConfigRoundTripTest {
     fun `timing scaled multiplies and adds pause`() {
         val timing = CallTiming(delayScale = 2.0, pauseAfterStepMs = 100)
         assertEquals(1100L, timing.scaled(500, 2.0))
-        assertEquals(100L, timing.scaled(0, 0.0)) // invalid scale falls back to 1.0
+        // invalid scale falls back to 1.0; ms clamped into 200..1000
+        assertEquals(200L, timing.scaled(0, 0.0))
     }
 
     @Test
-    fun `timing scaled clamps negative to pause only`() {
+    fun `timing scaled clamps to min and max`() {
         val timing = CallTiming(pauseAfterStepMs = 50)
-        assertEquals(50L, timing.scaled(-10, 1.0))
+        assertEquals(250L, timing.scaled(-10, 1.0)) // MIN=200
+        assertEquals(1050L, timing.scaled(5_000, 1.0)) // MAX=1000
     }
 
     @Test

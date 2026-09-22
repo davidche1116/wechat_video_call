@@ -95,7 +95,7 @@ data class CallStep(
                 id = o.optString("id"),
                 action = o.optString("action", "tap"),
                 required = o.optBoolean("required", false),
-                delayAfterMs = o.optInt("delayAfterMs", 1200),
+                delayAfterMs = o.optInt("delayAfterMs", 400),
                 durationMs = if (o.has("durationMs")) o.optInt("durationMs") else null,
                 coord = StepCoord.fromJson(o.optJSONObject("coord")),
             )
@@ -106,18 +106,25 @@ data class CallStep(
 data class CallTiming(
     val sessionTimeoutMs: Int = 45_000,
     val stepCooldownMs: Int = 1_500,
-    val defaultDelayAfterMs: Int = 1_200,
+    /** Fallback when a step has no explicit delay. */
+    val defaultDelayAfterMs: Int = 400,
     val delayScale: Double = 1.0,
     val pauseAfterStepMs: Int = 0,
-    val searchResultDelayMs: Int = 3_000,
-    val plusButtonDelayMs: Int = 2_500,
-    val videoMenuDelayMs: Int = 2_000,
-    val confirmDelayMs: Int = 2_000,
+    val searchResultDelayMs: Int = 1_000,
+    val plusButtonDelayMs: Int = 800,
+    val videoMenuDelayMs: Int = 600,
+    val confirmDelayMs: Int = 300,
     val longPressDurationMs: Int = 600,
+    /** Wait after openWeChat before the first gesture. */
+    val launchSettleMs: Int = 500,
 ) {
+    /** Absolute floor / ceiling for any post-step wait (P0 speed budget). */
+    fun clampDelay(ms: Int): Int = ms.coerceIn(MIN_STEP_DELAY_MS, MAX_STEP_DELAY_MS)
+
     fun scaled(ms: Int, scale: Double): Long {
         val s = if (scale > 0) scale else 1.0
-        return (ms * s).toLong().coerceAtLeast(0L) + pauseAfterStepMs.toLong()
+        val clamped = clampDelay(ms)
+        return (clamped * s).toLong().coerceAtLeast(0L) + pauseAfterStepMs.toLong()
     }
 
     fun toJson(): JSONObject {
@@ -132,23 +139,31 @@ data class CallTiming(
             put("videoMenuDelayMs", videoMenuDelayMs)
             put("confirmDelayMs", confirmDelayMs)
             put("longPressDurationMs", longPressDurationMs)
+            put("launchSettleMs", launchSettleMs)
         }
     }
 
     companion object {
+        /** Fastest post-step wait (ms). */
+        const val MIN_STEP_DELAY_MS = 200
+
+        /** Hard cap so P0 stays snappy; tune via delayScale for slow devices. */
+        const val MAX_STEP_DELAY_MS = 1_000
+
         fun fromJson(o: JSONObject?): CallTiming {
             if (o == null) return CallTiming()
             return CallTiming(
                 sessionTimeoutMs = o.optInt("sessionTimeoutMs", 45_000),
                 stepCooldownMs = o.optInt("stepCooldownMs", 1_500),
-                defaultDelayAfterMs = o.optInt("defaultDelayAfterMs", 1_200),
+                defaultDelayAfterMs = o.optInt("defaultDelayAfterMs", 400),
                 delayScale = o.optDouble("delayScale", 1.0),
                 pauseAfterStepMs = o.optInt("pauseAfterStepMs", 0),
-                searchResultDelayMs = o.optInt("searchResultDelayMs", 3_000),
-                plusButtonDelayMs = o.optInt("plusButtonDelayMs", 2_500),
-                videoMenuDelayMs = o.optInt("videoMenuDelayMs", 2_000),
-                confirmDelayMs = o.optInt("confirmDelayMs", 2_000),
+                searchResultDelayMs = o.optInt("searchResultDelayMs", 1_000),
+                plusButtonDelayMs = o.optInt("plusButtonDelayMs", 800),
+                videoMenuDelayMs = o.optInt("videoMenuDelayMs", 600),
+                confirmDelayMs = o.optInt("confirmDelayMs", 300),
                 longPressDurationMs = o.optInt("longPressDurationMs", 600),
+                launchSettleMs = o.optInt("launchSettleMs", 500),
             )
         }
     }
@@ -232,18 +247,22 @@ data class CallConfig(
             else -> false
         }
 
+        /**
+         * Default post-step waits (ms). Budget: 200–1000ms only —
+         * heavier UI transitions get more, never above 1000.
+         */
         fun defaultDelay(id: String): Int = when (id) {
-            StepIds.HOME_TAB -> 1200
-            StepIds.SEARCH_ICON -> 1200
-            StepIds.SEARCH_BOX_LONG_PRESS -> 800
-            StepIds.PASTE_BUBBLE -> 2500
-            StepIds.SEARCH_RESULT -> 3000
-            StepIds.PLUS_BUTTON -> 2500
-            StepIds.VIDEO_MENU -> 2000
-            StepIds.VIDEO_CONFIRM -> 0
-            StepIds.VOICE_CONFIRM -> 0
-            StepIds.HANG_UP -> 0
-            else -> 1200
+            StepIds.HOME_TAB -> 200
+            StepIds.SEARCH_ICON -> 300
+            StepIds.SEARCH_BOX_LONG_PRESS -> 400
+            StepIds.PASTE_BUBBLE -> 800
+            StepIds.SEARCH_RESULT -> 1_000
+            StepIds.PLUS_BUTTON -> 800
+            StepIds.VIDEO_MENU -> 600
+            StepIds.VIDEO_CONFIRM -> 300
+            StepIds.VOICE_CONFIRM -> 300
+            StepIds.HANG_UP -> 200
+            else -> 400
         }
 
         fun stepOrder(id: String): Int = when (id) {

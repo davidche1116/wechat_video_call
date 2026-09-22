@@ -201,18 +201,22 @@ class WvcTiming {
   /// Long-press hold duration (ms).
   final int longPressDurationMs;
 
+  /// Wait after openWeChat before the first gesture (ms).
+  final int launchSettleMs;
+
   /// Creates timing knobs (defaults match Kotlin `CallTiming`).
   const WvcTiming({
     this.sessionTimeoutMs = 45000,
     this.stepCooldownMs = 1500,
-    this.defaultDelayAfterMs = 1200,
+    this.defaultDelayAfterMs = 400,
     this.delayScale = 1.0,
     this.pauseAfterStepMs = 0,
-    this.searchResultDelayMs = 3000,
-    this.plusButtonDelayMs = 2500,
-    this.videoMenuDelayMs = 2000,
-    this.confirmDelayMs = 2000,
+    this.searchResultDelayMs = 1000,
+    this.plusButtonDelayMs = 800,
+    this.videoMenuDelayMs = 600,
+    this.confirmDelayMs = 300,
     this.longPressDurationMs = 600,
+    this.launchSettleMs = 500,
   });
 
   /// Parses from config JSON.
@@ -221,16 +225,17 @@ class WvcTiming {
       sessionTimeoutMs: (json['sessionTimeoutMs'] as num?)?.toInt() ?? 45000,
       stepCooldownMs: (json['stepCooldownMs'] as num?)?.toInt() ?? 1500,
       defaultDelayAfterMs:
-          (json['defaultDelayAfterMs'] as num?)?.toInt() ?? 1200,
+          (json['defaultDelayAfterMs'] as num?)?.toInt() ?? 400,
       delayScale: (json['delayScale'] as num?)?.toDouble() ?? 1.0,
       pauseAfterStepMs: (json['pauseAfterStepMs'] as num?)?.toInt() ?? 0,
       searchResultDelayMs:
-          (json['searchResultDelayMs'] as num?)?.toInt() ?? 3000,
-      plusButtonDelayMs: (json['plusButtonDelayMs'] as num?)?.toInt() ?? 2500,
-      videoMenuDelayMs: (json['videoMenuDelayMs'] as num?)?.toInt() ?? 2000,
-      confirmDelayMs: (json['confirmDelayMs'] as num?)?.toInt() ?? 2000,
+          (json['searchResultDelayMs'] as num?)?.toInt() ?? 1000,
+      plusButtonDelayMs: (json['plusButtonDelayMs'] as num?)?.toInt() ?? 800,
+      videoMenuDelayMs: (json['videoMenuDelayMs'] as num?)?.toInt() ?? 600,
+      confirmDelayMs: (json['confirmDelayMs'] as num?)?.toInt() ?? 300,
       longPressDurationMs:
           (json['longPressDurationMs'] as num?)?.toInt() ?? 600,
+      launchSettleMs: (json['launchSettleMs'] as num?)?.toInt() ?? 500,
     );
   }
 
@@ -246,6 +251,7 @@ class WvcTiming {
     'videoMenuDelayMs': videoMenuDelayMs,
     'confirmDelayMs': confirmDelayMs,
     'longPressDurationMs': longPressDurationMs,
+    'launchSettleMs': launchSettleMs,
   };
 }
 

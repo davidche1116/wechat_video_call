@@ -44,7 +44,8 @@ class WeChatCallService : AccessibilityService() {
         private const val PREPARE_SEARCH_TO_LP_MS = 1_200L
         private const val PREPARE_PASTE_CHAIN_MS = 2_200L
 
-        private const val DEFAULT_STEP_DELAY_MS = 400
+        /** Floor used only when a planned step has no delay. */
+        private const val DEFAULT_STEP_DELAY_MS = 200
         private const val LONG_PRESS_MIN_MS = 400
     }
 
@@ -115,7 +116,11 @@ class WeChatCallService : AccessibilityService() {
 
     private fun scaled(ms: Int): Long {
         val s = if (delayScale > 0) delayScale else 1.0
-        return (ms * s).toLong().coerceAtLeast(0L) + pauseAfterStepMs.toLong()
+        val clamped = ms.coerceIn(
+            com.dc16.wechat_video_call.config.CallTiming.MIN_STEP_DELAY_MS,
+            com.dc16.wechat_video_call.config.CallTiming.MAX_STEP_DELAY_MS,
+        )
+        return (clamped * s).toLong().coerceAtLeast(0L) + pauseAfterStepMs.toLong()
     }
 
     private fun writeClipboard(text: String): Boolean {
@@ -373,7 +378,7 @@ class WeChatCallService : AccessibilityService() {
         // One-shot deadline: fires once at sessionTimeoutMs.
         handler.postDelayed(timeoutRunnable, sessionTimeoutMs)
         // Wait for WeChat to fully come to foreground before first gesture.
-        handler.postDelayed({ runCurrent() }, scaled(2200))
+        handler.postDelayed({ runCurrent() }, scaled(config.timing.launchSettleMs))
         return true
     }
 
@@ -456,22 +461,22 @@ class WeChatCallService : AccessibilityService() {
 
         return ids.mapNotNull { id ->
             val step = config.step(id) ?: return@mapNotNull null
-            // Delays are AFTER the gesture (time for UI to settle). Generous on purpose.
-            val delay = when (id) {
-                StepIds.HOME_TAB -> 1800
-                StepIds.SEARCH_ICON -> 2000
-                StepIds.SEARCH_BOX_LONG_PRESS -> 1500
-                StepIds.PASTE_BUBBLE -> 3200
-                StepIds.SEARCH_RESULT -> 3500
-                StepIds.PLUS_BUTTON -> 2800
-                StepIds.VIDEO_MENU -> 2500
-                StepIds.VIDEO_CONFIRM, StepIds.VOICE_CONFIRM -> 1500
-                else -> step.delayAfterMs.coerceAtLeast(DEFAULT_STEP_DELAY_MS)
-            }
+            // Prefer per-step delay; fall back to CallTiming named fields (P0:
+            // no hardcoded long waits — budget 200..1000ms after clamp).
+            val delay = step.delayAfterMs.takeIf { it > 0 }
+                ?: when (id) {
+                    StepIds.SEARCH_RESULT -> config.timing.searchResultDelayMs
+                    StepIds.PLUS_BUTTON -> config.timing.plusButtonDelayMs
+                    StepIds.VIDEO_MENU -> config.timing.videoMenuDelayMs
+                    StepIds.VIDEO_CONFIRM, StepIds.VOICE_CONFIRM -> config.timing.confirmDelayMs
+                    else -> config.timing.defaultDelayAfterMs
+                }
             Planned(
                 id = id,
                 action = step.action,
-                delayAfterMs = delay,
+                delayAfterMs = config.timing.clampDelay(
+                    if (delay > 0) delay else DEFAULT_STEP_DELAY_MS,
+                ),
                 coord = step.coord,
                 durationMs = step.durationMs
                     ?: if (step.action == "longPress") {

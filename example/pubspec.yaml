@@ -1,7 +1,7 @@
 name: wechat_video_call_example
 description: Demo for wechat_video_call plugin — calibration wizard + dial flow.
 publish_to: 'none'
-version: 2.0.0
+version: 2.0.1
 
 environment:
   sdk: ^3.13.4
