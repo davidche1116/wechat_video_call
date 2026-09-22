@@ -32,6 +32,19 @@ class CallConfigRoundTripTest {
     }
 
     @Test
+    fun `long press settle floor covers paste menu`() {
+        // 2.0.1 used 400ms after searchBoxLongPress — too short for the paste bubble.
+        assertEquals(800, CallTiming.LONG_PRESS_SETTLE_MIN_MS)
+        assertEquals(
+            CallTiming.LONG_PRESS_SETTLE_MIN_MS,
+            CallConfig.defaultDelay(StepIds.SEARCH_BOX_LONG_PRESS),
+        )
+        assertTrue(
+            CallConfig.defaultDelay(StepIds.SEARCH_BOX_LONG_PRESS) >= 800,
+        )
+    }
+
+    @Test
     fun `stepCoord json roundtrip keeps displayAtRecord and recordedAt`() {
         val coord = StepCoord(
             fx = 0.5,

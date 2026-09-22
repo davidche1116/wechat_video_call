@@ -124,7 +124,7 @@ class WvcCallStep {
     required this.id,
     required this.action,
     required this.required,
-    this.delayAfterMs = 1200,
+    this.delayAfterMs = 800,
     this.durationMs,
     this.coord,
   });
@@ -136,7 +136,7 @@ class WvcCallStep {
       id: json['id'] as String,
       action: json['action'] as String? ?? 'tap',
       required: json['required'] as bool? ?? false,
-      delayAfterMs: (json['delayAfterMs'] as num?)?.toInt() ?? 1200,
+      delayAfterMs: (json['delayAfterMs'] as num?)?.toInt() ?? 800,
       durationMs: (json['durationMs'] as num?)?.toInt(),
       coord: coordJson is Map
           ? WvcCoordinate.fromJson(coordJson.cast<String, dynamic>())

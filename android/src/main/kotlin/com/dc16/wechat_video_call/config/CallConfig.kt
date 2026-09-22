@@ -150,6 +150,13 @@ data class CallTiming(
         /** Hard cap so P0 stays snappy; tune via delayScale for slow devices. */
         const val MAX_STEP_DELAY_MS = 1_000
 
+        /**
+         * Minimum settle after a long-press so the system paste/context menu
+         * can finish appearing. Applied even when a stored step delay is lower
+         * (2.0.1 configs baked in 400ms).
+         */
+        const val LONG_PRESS_SETTLE_MIN_MS = 800
+
         fun fromJson(o: JSONObject?): CallTiming {
             if (o == null) return CallTiming()
             return CallTiming(
@@ -250,11 +257,12 @@ data class CallConfig(
         /**
          * Default post-step waits (ms). Budget: 200–1000ms only —
          * heavier UI transitions get more, never above 1000.
+         * Long-press needs extra settle so the paste menu is actually visible.
          */
         fun defaultDelay(id: String): Int = when (id) {
             StepIds.HOME_TAB -> 200
             StepIds.SEARCH_ICON -> 300
-            StepIds.SEARCH_BOX_LONG_PRESS -> 400
+            StepIds.SEARCH_BOX_LONG_PRESS -> CallTiming.LONG_PRESS_SETTLE_MIN_MS
             StepIds.PASTE_BUBBLE -> 800
             StepIds.SEARCH_RESULT -> 1_000
             StepIds.PLUS_BUTTON -> 800

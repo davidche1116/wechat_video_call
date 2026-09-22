@@ -1,3 +1,16 @@
+## 2.0.2
+
+### Fix
+
+- **Paste bubble often unclickable after long-pressing the search box.**
+  2.0.1 scheduled the paste tap `delayAfterMs` (default 400ms) from gesture
+  *dispatch start*, while the long-press hold itself is 600ms — the paste tap
+  fired before the hold finished and before the system paste menu appeared.
+  Next-step scheduling now waits for the gesture hold to complete, then a
+  post-long-press settle floor of 800ms (applied even to old configs that
+  stored 400ms, and after `delayScale` so fast mode cannot starve the menu).
+- `CallConfig.defaultDelay(searchBoxLongPress)` raised 400 → 800.
+
 ## 2.0.1
 
 ### Performance

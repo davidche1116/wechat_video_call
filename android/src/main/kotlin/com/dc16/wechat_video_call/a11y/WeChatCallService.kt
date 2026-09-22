@@ -47,6 +47,15 @@ class WeChatCallService : AccessibilityService() {
         /** Floor used only when a planned step has no delay. */
         private const val DEFAULT_STEP_DELAY_MS = 200
         private const val LONG_PRESS_MIN_MS = 400
+
+        /**
+         * Extra settle after a long-press gesture *completes* so the system
+         * paste/context menu can appear before the next tap. 2.0.1 only waited
+         * delayAfterMs from dispatch start (400ms), which raced the 600ms hold
+         * and missed the paste bubble.
+         */
+        private const val LONG_PRESS_SETTLE_MIN_MS =
+            com.dc16.wechat_video_call.config.CallTiming.LONG_PRESS_SETTLE_MIN_MS.toLong()
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -121,6 +130,29 @@ class WeChatCallService : AccessibilityService() {
             com.dc16.wechat_video_call.config.CallTiming.MAX_STEP_DELAY_MS,
         )
         return (clamped * s).toLong().coerceAtLeast(0L) + pauseAfterStepMs.toLong()
+    }
+
+    /** Hold time of the gesture just dispatched (ms). */
+    private fun gestureHoldMs(action: String, durationMs: Int?): Long {
+        val raw = (durationMs ?: if (action == "longPress") 600 else 80).toLong()
+        return raw.coerceAtLeast(40L)
+    }
+
+    /**
+     * Delay from gesture start until the next step.
+     * Must cover the hold itself — dispatchGesture is async and returns before
+     * the stroke finishes — plus post-step UI settle.
+     */
+    private fun nextStepDelayMs(planned: Planned): Long {
+        val holdMs = gestureHoldMs(planned.action, planned.durationMs)
+        val settle = scaled(planned.delayAfterMs)
+        // Floor after scale so fast delayScale cannot starve the paste menu.
+        val settleFloored = if (planned.action == "longPress") {
+            settle.coerceAtLeast(LONG_PRESS_SETTLE_MIN_MS)
+        } else {
+            settle
+        }
+        return holdMs + settleFloored
     }
 
     private fun writeClipboard(text: String): Boolean {
@@ -538,7 +570,7 @@ class WeChatCallService : AccessibilityService() {
             "completed",
             message = "tapped (${resolved.x.toInt()},${resolved.y.toInt()})",
         )
-        val delay = scaled(planned.delayAfterMs)
+        val delay = nextStepDelayMs(planned)
         stepIndex += 1
         handler.postDelayed({ runCurrent() }, delay)
     }
